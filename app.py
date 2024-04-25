@@ -16,6 +16,8 @@ from openai import OpenAI
 import streamlit_ext as ste
 from folium import plugins
 
+df = pd.read_excel('C:/Users/aspir/PODRÓŻE/Bruksela_miejsca_odnosniki.xlsx')
+
 
 def create_map(df_rec, choose_rec):
 
