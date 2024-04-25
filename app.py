@@ -101,13 +101,8 @@ st.markdown("<h1 style='margin-top: -82px; text-align: center;'>Dokąd tym razem
 
 nazwy = pd.read_excel('miasta.xlsx')
 
-przyklady = pd.read_excel('przyklady.xlsx')
-przyklady.index = przyklady.index + 1 
 
 
-
- 
-df = pd.read_excel('Bruksela_miejsca_odnosniki.xlsx')
 
 st.markdown(
     """
