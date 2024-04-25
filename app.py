@@ -126,8 +126,11 @@ with colB:
         miasta =  sorted(list(set(nazwy['Miasta'].to_list())))
     else:
         miasta = sorted(list(set(nazwy.loc[nazwy['Państwa']==panstwo, 'Miasta'].to_list())))
-    miasto = st.selectbox("### **Wybierz / wpisz nazwę miasta:**", miasta, index=miasta.index('Bruksela'))
-
+    try:
+        miasto = st.selectbox("### **Wybierz / wpisz nazwę miasta:**", miasta, index=miasta.index('Bruksela'))
+    except:
+        miasto = st.selectbox("### **Wybierz / wpisz nazwę miasta:**", miasta)
+                      
 with colA:
     zakres_ocen = st.radio("Wybierz zakres ocen rekomendowanych miejsc (średnia na Google Maps)", ['3,5 i wyżej', '4 i wyżej', '4,5 i wyżej'], horizontal=True, index =0)
 if zakres_ocen == '3,5 i wyżej':
@@ -162,7 +165,7 @@ if 'previous_choose_phrase' not in st.session_state:
     st.session_state.previous_l_rekomendacji = ''
 
 tekst = f'''
-             Po wybraniu miasta generowana jest lista miejsc (atrakcji oraz 
+             Po wybraniu miasta (TOP 60 miast Europy pod względem liczby ludności) generowana jest lista miejsc (atrakcji oraz 
              miejsc z jedzeniem) wraz z mapką i odnośnikami do videoblogów, w których mowa 
              o tych miejsach. Dodatkowo, po prawej stronie wyświetlane są informacje o atrakcji najbardziej dopasowanej do podanych oczekiwań📈'''
 
