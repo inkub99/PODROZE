@@ -11,13 +11,10 @@ import ast
 import json
 import folium
 import statistics
-import docx
-from docx import Document
 from datetime import datetime
 from openai import OpenAI
 import streamlit_ext as ste
 from folium import plugins
-import random
 
 
 def create_map(df_rec, choose_rec):
