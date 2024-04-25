@@ -174,6 +174,8 @@ if "choose_rec" not in st.session_state:
 
 if choose__phrase != st.session_state.previous_choose_phrase or miasto != st.session_state.previous_miasto or zakres_ocen != st.session_state.previous_zakres_ocen or l_rekomendacji != st.session_state.previous_l_rekomendacji:
     if choose__phrase!= '':
+        with st.sidebar:
+            st.write(f'✅ Szukam miejsca odpowiadającego Twoim oczekiwaniom')
         st.session_state.choose_rec = 8
     else:
         st.session_state.choose_rec = 0
@@ -183,13 +185,6 @@ if choose__phrase != st.session_state.previous_choose_phrase or miasto != st.ses
     st.session_state.previous_l_rekomendacji = l_rekomendacji
 
 if miasto != ' ':
-
-        with st.sidebar:
-            if choose__phrase!='':
-                st.write(f'✅ Szukam miejsca odpowiadającego Twoim oczekiwaniom')
-                st.write(f'✅✅ Generuję mapkę')
-            else:
-                st.write(f'✅ Generuję mapkę')
 
         col1, col2, col3 = st.columns([5,0.05,2])
 
