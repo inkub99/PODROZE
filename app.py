@@ -96,7 +96,7 @@ st.set_page_config(
 
 pd.set_option('display.float_format', '{:.0f}'.format)
 
-st.markdown("<h1 style='margin-top: -82px; text-align: center;'>Dokąd tym razem? 💺</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='margin-top: -70px; text-align: center;'>Dokąd tym razem? 💺</h1>", unsafe_allow_html=True)
 
 nazwy = pd.read_excel('miasta.xlsx')
 
@@ -166,7 +166,7 @@ tekst = f'''
              miejsc z jedzeniem) wraz z mapką i odnośnikami do videoblogów, w których mowa 
              o tych miejsach. Dodatkowo, po prawej stronie wyświetlane są informacje o atrakcji najbardziej dopasowanej do podanych oczekiwań📈'''
 
-st.markdown(f"<h6 style='margin-top: -35px; text-align: left;'>{tekst}</h3>", unsafe_allow_html=True)
+st.markdown(f"<h6 style='margin-top: -23px; text-align: left;'>{tekst}</h6>", unsafe_allow_html=True)
 
 
 if "choose_rec" not in st.session_state:
