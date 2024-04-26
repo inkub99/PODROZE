@@ -179,7 +179,7 @@ if 'previous_choose_phrase' not in st.session_state:
     st.session_state.previous_l_rekomendacji = ''
     st.session_state.choose_rec = 0
     st.session_df = pd.DataFrame()
-    st.session_qdrant = qdrant_client.QdrantClient(url="http://localhost:6333", prefer_grpc=True)
+    st.session_qdrant = qdrant_client.QdrantClient(url="http://localhost:6334", prefer_grpc=True)
 
 if miasto != st.session_state.previous_miasto:
     st.session_df = pd.read_feather('Bruksela_miejsca_odnosniki_INFO.ftr')
@@ -256,6 +256,21 @@ tekst = f'''
 st.markdown(f"<h6 style='margin-top: -23px; text-align: left;'>{tekst}</h6>", unsafe_allow_html=True)
 
 
+def zgodnosc(baza, i, choose__phrase_tr):
+    response = client.chat.completions.create(
+      model="gpt-3.5-turbo",
+      messages=[
+        {"role": "system", "content": f'''
+        The user provides expectations regarding the place he wants to visit. 
+        The recommendation system recommends a place. Decide whether the recommendation is as expected. 
+        If so return 1, if not, 0 (and nothing else)
+        '''},
+        {"role": "user", "content": f'''Expectation: {choose__phrase_tr},
+    Description of recommended place: {baza.iloc[i, 9]}'''}
+      ]
+    )
+    return response.choices[0].message.content 
+
 
 if choose__phrase != st.session_state.previous_choose_phrase or miasto != st.session_state.previous_miasto or zakres_ocen != st.session_state.previous_zakres_ocen or l_rekomendacji != st.session_state.previous_l_rekomendacji:
     if choose__phrase!= '':
@@ -265,14 +280,22 @@ if choose__phrase != st.session_state.previous_choose_phrase or miasto != st.ses
         query_results = query_qdrant(choose__phrase_tr, 'art')
         if query_results[0].payload["title"] in df_rec['title'].to_list():
             st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[0].payload["title"]].tolist()[0]
+            if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase_tr) != '1':
+                st.session_state.choose_rec = 0
+                with st.sidebar:
+                    st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania.')
         elif query_results[1].payload["title"] in df_rec['title'].to_list():
-            with st.sidebar:
-                st.write(f'🤖 Rozważ wzrost liczby miejsc. Większa liczba miejsc oznacza większą trafność rekomendacji')
             st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[1].payload["title"]].tolist()[0]
+            if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase_tr) != '1':
+                st.session_state.choose_rec = 0
+                with st.sidebar:
+                    st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania.')
         elif query_results[2].payload["title"] in df_rec['title'].to_list():
-            with st.sidebar:
-                st.write(f'🤖 Rozważ wzrost liczby miejsc. Większa liczba miejsc oznacza większą trafność rekomendacji')
             st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[2].payload["title"]].tolist()[0]
+            if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase_tr) != '1':
+                st.session_state.choose_rec = 0
+                with st.sidebar:
+                    st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania.')
         else:
             with st.sidebar:
                 st.write(f'🤖 Nie znaleziono miejsc spełniających Twoje oczekiwania. Zwiększ liczbę branych pod uwagę miejsc.')
