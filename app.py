@@ -15,8 +15,61 @@ from datetime import datetime
 from openai import OpenAI
 import streamlit_ext as ste
 from folium import plugins
+from typing import List, Iterator
+from openai import OpenAI
+client = OpenAI(api_key=AI_API_KEY)
+import os
+import wget
+from ast import literal_eval
+import qdrant_client
+import warnings
+from qdrant_client.http import models as rest
 
-df = pd.read_excel('Bruksela_miejsca_odnosniki.xlsx')
+primary_color = "#00AADB"
+
+st.set_page_config(
+    page_title="Dokąd tym razem? 💺",
+    page_icon=":bar_chart:",
+    layout="wide",
+)
+
+pd.set_option('display.float_format', '{:.0f}'.format)
+
+st.markdown("<h1 style='margin-top: -70px; text-align: center;'>Dokąd tym razem? 💺</h1>", unsafe_allow_html=True)
+
+def query_qdrant(query, collection_name, vector_name='content', top_k=3):
+
+    # Creates embedding vector from user query
+    embedded_query = client.embeddings.create(
+        input=query,
+        model="text-embedding-ada-002",
+    ).data[0].embedding
+    
+    
+    query_results = st.session_qdrant.search(
+        collection_name=collection_name,
+        query_vector=(
+            vector_name, embedded_query
+        ),
+        limit=top_k,
+    )
+    
+    return query_results
+
+def translate(i):
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "Przetłumacz na język polski"},
+            {"role": "user", "content":i}
+        ],
+    )
+    try:
+        results = response.choices[0].message.content
+    except:
+        results = ''
+    return results
+
 
 
 def create_map(df_rec, choose_rec):
@@ -86,18 +139,6 @@ def create_map(df_rec, choose_rec):
 
     
 
-primary_color = "#00AADB"
-
-st.set_page_config(
-    page_title="Dokąd tym razem? 💺",
-    page_icon=":bar_chart:",
-    layout="wide",
-)
-
-pd.set_option('display.float_format', '{:.0f}'.format)
-
-st.markdown("<h1 style='margin-top: -70px; text-align: center;'>Dokąd tym razem? 💺</h1>", unsafe_allow_html=True)
-
 nazwy = pd.read_excel('miasta.xlsx')
 
 
@@ -130,15 +171,63 @@ with colB:
         miasto = st.selectbox("### **Wybierz / wpisz nazwę miasta:**", miasta, index=miasta.index('Bruksela'))
     except:
         miasto = st.selectbox("### **Wybierz / wpisz nazwę miasta:**", miasta)
-                      
+
+if 'previous_choose_phrase' not in st.session_state:
+    st.session_state.previous_choose_phrase= ''
+    st.session_state.previous_miasto = ''
+    st.session_state.previous_zakres_ocen = ''
+    st.session_state.previous_l_rekomendacji = ''
+    st.session_state.choose_rec = 0
+    st.session_df = pd.DataFrame()
+    st.session_qdrant = qdrant_client.QdrantClient(url="http://localhost:6333", prefer_grpc=True)
+
+if miasto != st.session_state.previous_miasto:
+    st.session_df = pd.read_feather('Bruksela_miejsca_odnosniki_INFO.ftr')
+    st.session_df['description_vec'] = st.session_df['description_vec'].apply(lambda x: list(x))
+    st.session_df['title_vec'] = st.session_df['title_vec'].apply(lambda x: list(x))
+    vector_size = len(st.session_df['description_vec'][0])
+    st.session_qdrant = qdrant_client.QdrantClient(url="http://localhost:6333", prefer_grpc=True)
+    st.session_qdrant.get_collections()
+
+    st.session_qdrant.recreate_collection(
+        collection_name='art',
+        vectors_config={
+            'title': rest.VectorParams(
+                distance=rest.Distance.COSINE,
+                size=vector_size,
+            ),
+            'content': rest.VectorParams(
+                distance=rest.Distance.COSINE,
+             size=vector_size,
+            ),
+        }
+    )
+
+
+    st.session_qdrant.upsert(
+        collection_name='art',
+        points=[
+            rest.PointStruct(
+                id=k,
+                vector={
+                    'title': v['title_vec'],
+                    'content': v['description_vec'],
+                },
+                payload=v.to_dict(),
+            )
+            for k, v in st.session_df.iterrows()
+        ],
+    )
+
+
 with colA:
     zakres_ocen = st.radio("Wybierz zakres ocen rekomendowanych miejsc (średnia na Google Maps)", ['3,5 i wyżej', '4 i wyżej', '4,5 i wyżej'], horizontal=True, index =0)
 if zakres_ocen == '3,5 i wyżej':
-    df_rec = df.copy()
+    df_rec = st.session_df.copy()
 if zakres_ocen == '4 i wyżej':
-    df_rec = df[df['rating']>=4]
+    df_rec = st.session_df[st.session_df['rating']>=4]
 if zakres_ocen == '4,5 i wyżej':
-    df_rec = df[df['rating']>=4.5]
+    df_rec = st.session_df[st.session_df['rating']>=4.5]
 
 with colB:
     l_rekomendacji = st.slider('Wybierz liczbę rekomendacji (rekomendacje są wyświetlane w kolejności od najpopularniejszych wg. liczby opinii na Google Maps)', min_value=min(10, len(df_rec)/2), max_value=len(df_rec), value=len(df_rec), step=5)
@@ -156,13 +245,8 @@ elif len(df_best[df_best['jedzenie']==1])<3:
 
 df_rec = df_rec.sort_values('ratingCount', ascending = False)
 
-choose__phrase = st.sidebar.text_input("Wyszukaj konkretną atrakcję (np. popularny bar / miejsce do przejażdżek rowerowych)",  "", key="placeholder")
+choose__phrase = st.sidebar.text_input("Wyszukaj konkretną atrakcję (np. popularny bar / sztuka współczesna)",  "", key="placeholder")
 
-if 'previous_choose_phrase' not in st.session_state:
-    st.session_state.previous_choose_phrase= ''
-    st.session_state.previous_miasto = ''
-    st.session_state.previous_zakres_ocen = ''
-    st.session_state.previous_l_rekomendacji = ''
 
 tekst = f'''
              Po wybraniu miasta (TOP 60 miast Europy pod względem liczby ludności) generowana jest lista miejsc (atrakcji oraz 
@@ -172,20 +256,36 @@ tekst = f'''
 st.markdown(f"<h6 style='margin-top: -23px; text-align: left;'>{tekst}</h6>", unsafe_allow_html=True)
 
 
-if "choose_rec" not in st.session_state:
-    st.session_state.choose_rec = 0
 
 if choose__phrase != st.session_state.previous_choose_phrase or miasto != st.session_state.previous_miasto or zakres_ocen != st.session_state.previous_zakres_ocen or l_rekomendacji != st.session_state.previous_l_rekomendacji:
     if choose__phrase!= '':
         with st.sidebar:
             st.write(f'✅ Szukam miejsca odpowiadającego Twoim oczekiwaniom')
-        st.session_state.choose_rec = 8
+        choose__phrase_tr = translate(choose__phrase)
+        query_results = query_qdrant(choose__phrase_tr, 'art')
+        if query_results[0].payload["title"] in df_rec['title'].to_list():
+            st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[0].payload["title"]].tolist()[0]
+        elif query_results[1].payload["title"] in df_rec['title'].to_list():
+            with st.sidebar:
+                st.write(f'🤖 Rozważ wzrost liczby miejsc. Większa liczba miejsc oznacza większą trafność rekomendacji')
+            st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[1].payload["title"]].tolist()[0]
+        elif query_results[2].payload["title"] in df_rec['title'].to_list():
+            with st.sidebar:
+                st.write(f'🤖 Rozważ wzrost liczby miejsc. Większa liczba miejsc oznacza większą trafność rekomendacji')
+            st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[2].payload["title"]].tolist()[0]
+        else:
+            with st.sidebar:
+                st.write(f'🤖 Nie znaleziono miejsc spełniających Twoje oczekiwania. Zwiększ liczbę branych pod uwagę miejsc.')
+            st.session_state.choose_rec = 0 
+
     else:
         st.session_state.choose_rec = 0
     st.session_state.previous_choose_phrase = choose__phrase
     st.session_state.previous_miasto = miasto
     st.session_state.previous_zakres_ocen = zakres_ocen
     st.session_state.previous_l_rekomendacji = l_rekomendacji
+
+
 
 if miasto != ' ':
 
