@@ -275,7 +275,7 @@ def zgodnosc(baza, i, choose__phrase_tr):
     return response.choices[0].message.content 
 
 
-if choose__phrase != st.session_state.previous_choose_phrase or miasto != st.session_state.previous_miasto or zakres_ocen != st.session_state.previous_zakres_ocen or>
+if choose__phrase != st.session_state.previous_choose_phrase or miasto != st.session_state.previous_miasto or zakres_ocen != st.session_state.previous_zakres_ocen or l_rekomendacji != st.session_state.previous_l_rekomendacji:
     if choose__phrase!= '':
         with st.sidebar:
             st.write(f'✅ Szukam miejsca odpowiadającego Twoim oczekiwaniom')
