@@ -321,11 +321,11 @@ if choose__phrase != st.session_state.previous_choose_phrase or miasto != st.ses
                             st.session_state.choose_rec = 0 
 
     else:
-    st.session_state.choose_rec = 0
-    st.session_state.previous_choose_phrase = choose__phrase
-    st.session_state.previous_miasto = miasto
-    st.session_state.previous_zakres_ocen = zakres_ocen
-    st.session_state.previous_l_rekomendacji = l_rekomendacji
+        st.session_state.choose_rec = 0
+        st.session_state.previous_choose_phrase = choose__phrase
+        st.session_state.previous_miasto = miasto
+        st.session_state.previous_zakres_ocen = zakres_ocen
+        st.session_state.previous_l_rekomendacji = l_rekomendacji
 
 
 
