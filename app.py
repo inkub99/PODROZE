@@ -261,7 +261,7 @@ st.markdown(f"<h6 style='margin-top: -23px; text-align: left;'>{tekst}</h6>", un
 
 def zgodnosc(baza, i, choose__phrase_tr):
     response = client.chat.completions.create(
-      model="gpt-3.5-turbo",
+      model="gpt-4-turbo",
       messages=[
         {"role": "system", "content": f'''
         The user provides expectations regarding the place he wants to visit. 
@@ -274,9 +274,11 @@ def zgodnosc(baza, i, choose__phrase_tr):
     )
     return response.choices[0].message.content 
 
+import time
 
 if choose__phrase != st.session_state.previous_choose_phrase or miasto != st.session_state.previous_miasto or zakres_ocen != st.session_state.previous_zakres_ocen or l_rekomendacji != st.session_state.previous_l_rekomendacji:
     if choose__phrase!= '':
+        time.sleep(1)
         with st.sidebar:
             st.write(f'✅ Szukam miejsca odpowiadającego Twoim oczekiwaniom')
         choose__phrase_tr = translate(choose__phrase)
