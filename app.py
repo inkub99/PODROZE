@@ -182,7 +182,10 @@ if 'previous_choose_phrase' not in st.session_state:
     st.session_qdrant = qdrant_client.QdrantClient(url="http://localhost:6334", prefer_grpc=True)
 
 if miasto != st.session_state.previous_miasto:
-    st.session_df = pd.read_feather('Bruksela_miejsca_odnosniki_INFO.ftr')
+    if miasto == 'Barcelona':
+        st.session_df = pd.read_feather('Barcelona_miejsca_odnosniki_INFO.ftr')
+    else:
+        st.session_df = pd.read_feather('Bruksela_miejsca_odnosniki_INFO.ftr')
     st.session_df['description_vec'] = st.session_df['description_vec'].apply(lambda x: list(x))
     st.session_df['title_vec'] = st.session_df['title_vec'].apply(lambda x: list(x))
     vector_size = len(st.session_df['description_vec'][0])
@@ -292,6 +295,18 @@ if choose__phrase != st.session_state.previous_choose_phrase or miasto != st.ses
                     st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania.')
         elif query_results[2].payload["title"] in df_rec['title'].to_list():
             st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[2].payload["title"]].tolist()[0]
+            if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase_tr) != '1':
+                st.session_state.choose_rec = 0
+                with st.sidebar:
+                    st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania.')
+        elif query_results[3].payload["title"] in df_rec['title'].to_list():
+            st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[3].payload["title"]].tolist()[0]
+            if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase_tr) != '1':
+                st.session_state.choose_rec = 0
+                with st.sidebar:
+                    st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania.')
+        elif query_results[4].payload["title"] in df_rec['title'].to_list():
+            st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[4].payload["title"]].tolist()[0]
             if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase_tr) != '1':
                 st.session_state.choose_rec = 0
                 with st.sidebar:
