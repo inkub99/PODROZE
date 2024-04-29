@@ -275,50 +275,53 @@ def zgodnosc(baza, i, choose__phrase_tr):
     return response.choices[0].message.content 
 
 
-if choose__phrase != st.session_state.previous_choose_phrase or miasto != st.session_state.previous_miasto or zakres_ocen != st.session_state.previous_zakres_ocen or l_rekomendacji != st.session_state.previous_l_rekomendacji:
+if choose__phrase != st.session_state.previous_choose_phrase or miasto != st.session_state.previous_miasto or zakres_ocen != st.session_state.previous_zakres_ocen or>
     if choose__phrase!= '':
         with st.sidebar:
             st.write(f'✅ Szukam miejsca odpowiadającego Twoim oczekiwaniom')
         choose__phrase_tr = translate(choose__phrase)
         query_results = query_qdrant(choose__phrase_tr, 'art')
-        st.write(query_results[0].payload["title"])
-        if query_results[0].payload["title"] in df_rec['title'].to_list():
+        try:
             st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[0].payload["title"]].tolist()[0]
             if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase_tr) != '1':
                 st.session_state.choose_rec = 0
                 with st.sidebar:
-                    st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania.')
-        elif query_results[1].payload["title"] in df_rec['title'].to_list():
-            st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[1].payload["title"]].tolist()[0]
-            if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase_tr) != '1':
-                st.session_state.choose_rec = 0
-                with st.sidebar:
-                    st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania.')
-        elif query_results[2].payload["title"] in df_rec['title'].to_list():
-            st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[2].payload["title"]].tolist()[0]
-            if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase_tr) != '1':
-                st.session_state.choose_rec = 0
-                with st.sidebar:
-                    st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania.')
-        elif query_results[3].payload["title"] in df_rec['title'].to_list():
-            st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[3].payload["title"]].tolist()[0]
-            if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase_tr) != '1':
-                st.session_state.choose_rec = 0
-                with st.sidebar:
-                    st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania.')
-        elif query_results[4].payload["title"] in df_rec['title'].to_list():
-            st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[4].payload["title"]].tolist()[0]
-            if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase_tr) != '1':
-                st.session_state.choose_rec = 0
-                with st.sidebar:
-                    st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania.')
-        else:
-            with st.sidebar:
-                st.write(f'🤖 Nie znaleziono miejsc spełniających Twoje oczekiwania. Zwiększ liczbę branych pod uwagę miejsc.')
-            st.session_state.choose_rec = 0 
+                    st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwani)                            
+        except:
+            try:
+                st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[1].payload["title"]].tolist()[0]
+                if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase_tr) != '1':
+                    st.session_state.choose_rec = 0
+                    with st.sidebar:
+                        st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania.')
+            except:
+                try:
+                    st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[2].payload["title"]].tolist()[0]
+                    if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase_tr) != '1':
+                        st.session_state.choose_rec = 0
+                        with st.sidebar:
+                            st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania.')
+                except:
+                    try:
+                    st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[3].payload["title"]].tolist()[0]
+                    if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase_tr) != '1':
+                        st.session_state.choose_rec = 0
+                        with st.sidebar:
+                            st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania.')
+                    except:
+                        try:
+                            st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[4].payload["title"]].tolist()[0]
+                            if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase_tr) != '1':
+                            st.session_state.choose_rec = 0
+                            with st.sidebar:
+                                st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania.')
+                        except:
+                            with st.sidebar:
+                                st.write(f'🤖 Nie znaleziono miejsc spełniających Twoje oczekiwania. Zwiększ liczbę branych pod uwagę miejsc.')
+                            st.session_state.choose_rec = 0 
 
     else:
-        st.session_state.choose_rec = 0
+    st.session_state.choose_rec = 0
     st.session_state.previous_choose_phrase = choose__phrase
     st.session_state.previous_miasto = miasto
     st.session_state.previous_zakres_ocen = zakres_ocen
