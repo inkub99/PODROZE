@@ -179,7 +179,7 @@ if 'previous_choose_phrase' not in st.session_state:
     st.session_state.previous_l_rekomendacji = ''
     st.session_state.choose_rec = 0
     st.session_df = pd.DataFrame()
-    st.session_qdrant = qdrant_client.QdrantClient(url="http://localhost:6334", prefer_grpc=True)
+    st.session_qdrant = qdrant_client.QdrantClient(url="http://localhost:6333")
 
 if miasto != st.session_state.previous_miasto:
     if miasto == 'Barcelona':
@@ -189,7 +189,7 @@ if miasto != st.session_state.previous_miasto:
     st.session_df['description_vec'] = st.session_df['description_vec'].apply(lambda x: list(x))
     st.session_df['title_vec'] = st.session_df['title_vec'].apply(lambda x: list(x))
     vector_size = len(st.session_df['description_vec'][0])
-    st.session_qdrant = qdrant_client.QdrantClient(url="http://localhost:6333", prefer_grpc=True)
+    st.session_qdrant = qdrant_client.QdrantClient(url="http://localhost:6333")
     st.session_qdrant.get_collections()
 
     st.session_qdrant.recreate_collection(
