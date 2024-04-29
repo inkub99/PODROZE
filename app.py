@@ -281,6 +281,7 @@ if choose__phrase != st.session_state.previous_choose_phrase or miasto != st.ses
             st.write(f'✅ Szukam miejsca odpowiadającego Twoim oczekiwaniom')
         choose__phrase_tr = translate(choose__phrase)
         query_results = query_qdrant(choose__phrase_tr, 'art')
+        st.write(query_results[0].payload["title"])
         if query_results[0].payload["title"] in df_rec['title'].to_list():
             st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[0].payload["title"]].tolist()[0]
             if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase_tr) != '1':
