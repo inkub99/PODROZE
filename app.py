@@ -186,6 +186,10 @@ if miasto != st.session_state.previous_miasto:
         st.session_df = pd.read_feather('Barcelona_miejsca_odnosniki_INFO.ftr')
     elif miasto == 'Berlin':
         st.session_df = pd.read_feather('Berlin_miejsca_odnosniki_INFO.ftr')
+    elif miasto == 'Amsterdam':
+        st.session_df = pd.read_feather('Amsterdam_miejsca_odnosniki_INFO.ftr')
+    elif miasto == 'Bratysława':
+        st.session_df = pd.read_feather('Bratysława_miejsca_odnosniki_INFO.ftr')
     elif miasto == 'Kopenhaga':
         st.session_df = pd.read_feather('Kopenhaga_miejsca_odnosniki_INFO.ftr')
     else:
