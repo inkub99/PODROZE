@@ -237,7 +237,7 @@ if zakres_ocen == '4,5 i wyżej':
     df_rec = st.session_df[st.session_df['rating']>=4.5]
 
 with colB:
-    l_rekomendacji = st.slider('Wybierz liczbę rekomendacji (rekomendacje są wyświetlane w kolejności od najpopularniejszych wg. liczby opinii na Google Maps)', min_value=min(len(df_rec) - 10 ), max_value=len(df_rec), value=len(df_rec), step=5)
+    l_rekomendacji = st.slider('Wybierz liczbę rekomendacji (rekomendacje są wyświetlane w kolejności od najpopularniejszych wg. liczby opinii na Google Maps)', min_value=min(10, len(df_rec) - 10 ), max_value=len(df_rec), value=len(df_rec), step=5)
 df_best = df_rec.iloc[0:l_rekomendacji,:]
 df_best_atr = df_rec[df_rec['jedzenie']==0].reset_index(drop=True).iloc[0:l_rekomendacji,:]
 df_best_food = df_rec[df_rec['jedzenie']==1].reset_index(drop=True).iloc[0:l_rekomendacji,:]
