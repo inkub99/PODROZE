@@ -186,6 +186,8 @@ if miasto != st.session_state.previous_miasto:
         st.session_df = pd.read_feather('Barcelona_miejsca_odnosniki_INFO.ftr')
     elif miasto == 'Berlin':
         st.session_df = pd.read_feather('Berlin_miejsca_odnosniki_INFO.ftr')
+    elif miasto == 'Kopenhaga':
+        st.session_df = pd.read_feather('Kopenhaga_miejsca_odnosniki_INFO.ftr')
     else:
         st.session_df = pd.read_feather('Bruksela_miejsca_odnosniki_INFO.ftr')
     st.session_df['description_vec'] = st.session_df['description_vec'].apply(lambda x: list(x))
