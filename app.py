@@ -358,7 +358,7 @@ if miasto != ' ':
                         st.session_state.choose_rec -= 1
             with col3c:
                 if st.button("➡️"):
-                    if st.session_state.choose_rec < len(df_rec) - 1:
+                    if st.session_state.choose_rec < len(df_rec):
                         st.session_state.choose_rec += 1
             
             st.markdown(f'<p style="font-weight:bold">{st.session_state.choose_rec+1}. {df_rec.iloc[st.session_state.choose_rec,2]}</p>', unsafe_allow_html=True)
