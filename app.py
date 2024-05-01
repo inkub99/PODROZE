@@ -184,6 +184,8 @@ if 'previous_choose_phrase' not in st.session_state:
 if miasto != st.session_state.previous_miasto:
     if miasto == 'Barcelona':
         st.session_df = pd.read_feather('Barcelona_miejsca_odnosniki_INFO.ftr')
+    elif miasto == 'Berlin':
+        st.session_df = pd.read_feather('Berlin_miejsca_odnosniki_INFO.ftr')
     else:
         st.session_df = pd.read_feather('Bruksela_miejsca_odnosniki_INFO.ftr')
     st.session_df['description_vec'] = st.session_df['description_vec'].apply(lambda x: list(x))
@@ -191,9 +193,9 @@ if miasto != st.session_state.previous_miasto:
     vector_size = len(st.session_df['description_vec'][0])
     st.session_qdrant = qdrant_client.QdrantClient(url="http://localhost:6333")
     st.session_qdrant.get_collections()
-
+    
     st.session_qdrant.recreate_collection(
-        collection_name='art',
+        collection_name=f'{miasto}',
         vectors_config={
             'title': rest.VectorParams(
                 distance=rest.Distance.COSINE,
@@ -208,7 +210,7 @@ if miasto != st.session_state.previous_miasto:
 
 
     st.session_qdrant.upsert(
-        collection_name='art',
+        collection_name=f'{miasto}',
         points=[
             rest.PointStruct(
                 id=k,
@@ -265,24 +267,22 @@ def zgodnosc(baza, i, choose__phrase_tr):
       messages=[
         {"role": "system", "content": f'''
         The user provides expectations regarding the place he wants to visit. 
-        The recommendation system recommends a place. Decide whether the recommendation is as expected. 
+        The recommendation system recommends a place. Decide whether the recommendation is as expected (somehow connected with user's expetations). 
         If so return 1, if not, 0 (and nothing else)
         '''},
         {"role": "user", "content": f'''Expectation: {choose__phrase_tr},
-    Description of recommended place: {baza.iloc[i, 9]}'''}
+    Description of recommended place: {baza.iloc[i, 10]}'''}
       ]
     )
     return response.choices[0].message.content 
 
-import time
 
 if choose__phrase != st.session_state.previous_choose_phrase or miasto != st.session_state.previous_miasto or zakres_ocen != st.session_state.previous_zakres_ocen or l_rekomendacji != st.session_state.previous_l_rekomendacji:
     if choose__phrase!= '':
-        time.sleep(1)
         with st.sidebar:
             st.write(f'✅ Szukam miejsca odpowiadającego Twoim oczekiwaniom')
         choose__phrase_tr = translate(choose__phrase)
-        query_results = query_qdrant(choose__phrase_tr, 'art')
+        query_results = query_qdrant(choose__phrase_tr, f'{miasto}')
         try:
             st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[0].payload["title"]].tolist()[0]
             if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase_tr) != '1':
