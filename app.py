@@ -266,12 +266,12 @@ def zgodnosc(baza, i, choose__phrase_tr):
       model="gpt-4-turbo",
       messages=[
         {"role": "system", "content": f'''
-        The user provides expectations regarding the place he wants to visit. 
-        The recommendation system recommends a place. Decide whether the recommendation is as expected (somehow connected with user's expetations). 
-        If so return 1, if not, 0 (and nothing else)
+        Użytkownik deklaruje czego szuka w danym mieście.
+        System rekomendacyjny poleca mu miejsca. Zdecyduj czy rekomendacja ma jakikolwiek sens (załóż, że w barze rybnym można zjeść krwetki itd.).
+         Jeśli tak, zwróć 1. Jeśli nie, zwróć 0. Nic więcej nie zwracaj.         
         '''},
-        {"role": "user", "content": f'''Expectation: {choose__phrase_tr},
-    Description of recommended place: {baza.iloc[i, 10]}'''}
+        {"role": "user", "content": f'''Oczekiwania: {choose__phrase_tr},
+    Opis rekomendowanego miejsca: {baza.iloc[i, 12]}'''}
       ]
     )
     return response.choices[0].message.content 
@@ -285,35 +285,35 @@ if choose__phrase != st.session_state.previous_choose_phrase or miasto != st.ses
         query_results = query_qdrant(choose__phrase_tr, f'{miasto}')
         try:
             st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[0].payload["title"]].tolist()[0]
-            if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase_tr) == '2':
+            if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase_tr) != '1':
                 st.session_state.choose_rec = 0
                 with st.sidebar:
                     st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania')                            
         except:
             try:
                 st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[1].payload["title"]].tolist()[0]
-                if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase_tr) == '2':
+                if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase_tr) != '1':
                     st.session_state.choose_rec = 0
                     with st.sidebar:
                         st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania.')
             except:
                 try:
                     st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[2].payload["title"]].tolist()[0]
-                    if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase_tr) == '2':
+                    if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase_tr) != '1':
                         st.session_state.choose_rec = 0
                         with st.sidebar:
                             st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania.')
                 except:
                     try:
                         st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[3].payload["title"]].tolist()[0]
-                        if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase_tr) == '2':
+                        if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase_tr) != '1':
                             st.session_state.choose_rec = 0
                             with st.sidebar:
                                 st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania.')
                     except:
                         try:
                             st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[4].payload["title"]].tolist()[0]
-                            if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase_tr) == '2':
+                            if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase_tr) != '1':
                                 st.session_state.choose_rec = 0
                                 with st.sidebar:
                                     st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania.')
