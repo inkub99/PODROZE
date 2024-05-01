@@ -247,7 +247,7 @@ if len(df_best[df_best['jedzenie']==0])>=5 & len(df_best[df_best['jedzenie']==1]
 elif len(df_best[df_best['jedzenie']==0])<5:
     df_rec = pd.concat([df_best_atr.iloc[:5], df_best_food.iloc[:l_rekomendacji - len(df_best_atr.iloc[:5]), ]]).reset_index(drop=True)
 elif len(df_best[df_best['jedzenie']==1])<3:
-    df_rec = pd.concat([df_best_food.iloc[:3], df_best_atr.iloc[:l_rekomendacji - len(df_best_atr.iloc[:3]), ]]).reset_index(drop=True)
+    df_rec = pd.concat([df_best_food.iloc[:3], df_best_atr.iloc[:l_rekomendacji - len(df_best_food.iloc[:3]), ]]).reset_index(drop=True)
 
 
 df_rec = df_rec.sort_values('ratingCount', ascending = False)
@@ -358,7 +358,7 @@ if miasto != ' ':
                         st.session_state.choose_rec -= 1
             with col3c:
                 if st.button("➡️"):
-                    if st.session_state.choose_rec < len(df_rec):
+                    if st.session_state.choose_rec < len(df_rec) - 1:
                         st.session_state.choose_rec += 1
             
             st.markdown(f'<p style="font-weight:bold">{st.session_state.choose_rec+1}. {df_rec.iloc[st.session_state.choose_rec,2]}</p>', unsafe_allow_html=True)
