@@ -184,6 +184,10 @@ if 'previous_choose_phrase' not in st.session_state:
 if miasto != st.session_state.previous_miasto:
     if miasto == 'Barcelona':
         st.session_df = pd.read_feather('Barcelona_miejsca_odnosniki_INFO.ftr')
+    elif miasto == 'Antwerpia':
+        st.session_df = pd.read_feather('Antwerpia_miejsca_odnosniki_INFO.ftr')
+    elif miasto == 'Hamburg':
+        st.session_df = pd.read_feather('Hamburg_miejsca_odnosniki_INFO.ftr')
     elif miasto == 'Berlin':
         st.session_df = pd.read_feather('Berlin_miejsca_odnosniki_INFO.ftr')
     elif miasto == 'Amsterdam':
