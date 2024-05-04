@@ -184,8 +184,8 @@ if 'previous_choose_phrase' not in st.session_state:
 if miasto != st.session_state.previous_miasto:
     if miasto == 'Barcelona':
         st.session_df = pd.read_feather('Barcelona_miejsca_odnosniki_INFO.ftr')
-    elif miasto == 'Antwerpia':
-        st.session_df = pd.read_feather('Antwerpia_miejsca_odnosniki_INFO.ftr')
+    elif miasto == 'Bruksela':
+        st.session_df = pd.read_feather('Bruksela_miejsca_odnosniki_INFO.ftr')
     elif miasto == 'Hamburg':
         st.session_df = pd.read_feather('Hamburg_miejsca_odnosniki_INFO.ftr')
     elif miasto == 'Berlin':
@@ -200,8 +200,20 @@ if miasto != st.session_state.previous_miasto:
         st.session_df = pd.read_feather('Neapol_miejsca_odnosniki_INFO.ftr')
     elif miasto == 'Mediolan':
         st.session_df = pd.read_feather('Mediolan_miejsca_odnosniki_INFO.ftr')
+    elif miasto == 'Paryż':
+        st.session_df = pd.read_feather('Paryż_miejsca_odnosniki_INFO.ftr')
+    elif miasto == 'Rzym':
+        st.session_df = pd.read_feather('Rzym_miejsca_odnosniki_INFO.ftr')
+    elif miasto == 'Sztokholm':
+        st.session_df = pd.read_feather('Sztokholm_miejsca_odnosniki_INFO.ftr')
+    elif miasto == 'Helsinki':
+        st.session_df = pd.read_feather('Helsinki_miejsca_odnosniki_INFO.ftr')
+    elif miasto == 'Madryt':
+        st.session_df = pd.read_feather('Madryt_miejsca_odnosniki_INFO.ftr')
+    elif miasto == 'Oslo':
+        st.session_df = pd.read_feather('Oslo_miejsca_odnosniki_INFO.ftr')
     else:
-        st.session_df = pd.read_feather('Bruksela_miejsca_odnosniki_INFO.ftr')
+        st.session_df = pd.read_feather('Antwerpia_miejsca_odnosniki_INFO.ftr')
     st.session_df['description_vec'] = st.session_df['description_vec'].apply(lambda x: list(x))
     st.session_df['title_vec'] = st.session_df['title_vec'].apply(lambda x: list(x))
     vector_size = len(st.session_df['description_vec'][0])
@@ -268,7 +280,7 @@ choose__phrase = st.sidebar.text_input("Wyszukaj konkretną atrakcję (np. popul
 
 
 tekst = f'''
-             Po wybraniu miasta (TOP 60 miast Europy pod względem liczby ludności) generowana jest lista miejsc (atrakcji oraz 
+             Po wybraniu miasta (docelowo będzie tu TOP 60 miast Europy pod względem liczby ludności) generowana jest lista miejsc (atrakcji oraz 
              miejsc z jedzeniem) wraz z mapką i odnośnikami do videoblogów, w których mowa 
              o tych miejsach. Dodatkowo, po prawej stronie wyświetlane są informacje o atrakcji najbardziej dopasowanej do podanych oczekiwań📈'''
 
