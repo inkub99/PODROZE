@@ -140,8 +140,7 @@ def create_map(df_rec, choose_rec):
     
 
 nazwy = pd.read_excel('miasta.xlsx')
-
-
+nazwy = nazwy[nazwy['done'] == 1]
 
 
 st.markdown(
@@ -168,7 +167,7 @@ with colB:
     else:
         miasta = sorted(list(set(nazwy.loc[nazwy['Państwa']==panstwo, 'Miasta'].to_list())))
     try:
-        miasto = st.selectbox("### **Wybierz / wpisz nazwę miasta:**", miasta, index=miasta.index('Bruksela'))
+        miasto = st.selectbox("### **Wybierz / wpisz nazwę miasta:**", miasta, index=miasta.index('Barcelona'))
     except:
         miasto = st.selectbox("### **Wybierz / wpisz nazwę miasta:**", miasta)
 
@@ -212,6 +211,14 @@ if miasto != st.session_state.previous_miasto:
         st.session_df = pd.read_feather('Madryt_miejsca_odnosniki_INFO.ftr')
     elif miasto == 'Oslo':
         st.session_df = pd.read_feather('Oslo_miejsca_odnosniki_INFO.ftr')
+    elif miasto == 'Lizbona':
+        st.session_df = pd.read_feather('Lizbona_miejsca_odnosniki_INFO.ftr')
+    elif miasto == 'Praga':
+        st.session_df = pd.read_feather('Praga_miejsca_odnosniki_INFO.ftr')
+    elif miasto == 'Ateny':
+        st.session_df = pd.read_feather('Ateny_miejsca_odnosniki_INFO.ftr')
+    elif miasto == 'Wiedeń':
+        st.session_df = pd.read_feather('Wiedeń_miejsca_odnosniki_INFO.ftr')
     else:
         st.session_df = pd.read_feather('Antwerpia_miejsca_odnosniki_INFO.ftr')
     st.session_df['description_vec'] = st.session_df['description_vec'].apply(lambda x: list(x))
@@ -280,7 +287,7 @@ choose__phrase = st.sidebar.text_input("Wyszukaj konkretną atrakcję (np. popul
 
 
 tekst = f'''
-             Po wybraniu miasta (docelowo będzie tu TOP 60 miast Europy pod względem liczby ludności) generowana jest lista miejsc (atrakcji oraz 
+             Po wybraniu miasta (w planach wszystkie europejskie miasta powyżej 500 tys. mieszkańców) generowana jest lista miejsc (atrakcji oraz 
              miejsc z jedzeniem) wraz z mapką i odnośnikami do videoblogów, w których mowa 
              o tych miejsach. Dodatkowo, po prawej stronie wyświetlane są informacje o atrakcji najbardziej dopasowanej do podanych oczekiwań📈'''
 
