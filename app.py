@@ -318,7 +318,6 @@ if choose__phrase != st.session_state.previous_choose_phrase or miasto != st.ses
         query_results = query_qdrant(choose__phrase, f'{miasto}')
         try:
             st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[0].payload["title"]].tolist()[0]
-            st.write(st.session_state.choose_rec, choose__phrase)
             if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase) != '1':
                 st.session_state.choose_rec = 0
                 with st.sidebar:
