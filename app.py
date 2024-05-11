@@ -2,7 +2,6 @@ import streamlit as st
 import threading
 import pandas as pd
 import numpy as np
-import openpyxl
 from datetime import datetime
 import time
 from streamlit_folium import folium_static
@@ -219,6 +218,10 @@ if miasto != st.session_state.previous_miasto:
         st.session_df = pd.read_feather('Ateny_miejsca_odnosniki_INFO.ftr')
     elif miasto == 'Wiedeń':
         st.session_df = pd.read_feather('Wiedeń_miejsca_odnosniki_INFO.ftr')
+    elif miasto == 'Wrocław':
+        st.session_df = pd.read_feather('Wrocław_miejsca_odnosniki_INFO.ftr')
+    elif miasto == 'Ryga':
+        st.session_df = pd.read_feather('Ryga_miejsca_odnosniki_INFO.ftr')
     else:
         st.session_df = pd.read_feather('Antwerpia_miejsca_odnosniki_INFO.ftr')
     st.session_df['description_vec'] = st.session_df['description_vec'].apply(lambda x: list(x))
