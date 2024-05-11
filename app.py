@@ -222,6 +222,8 @@ if miasto != st.session_state.previous_miasto:
         st.session_df = pd.read_feather('Wrocław_miejsca_odnosniki_INFO.ftr')
     elif miasto == 'Ryga':
         st.session_df = pd.read_feather('Ryga_miejsca_odnosniki_INFO.ftr')
+    elif miasto == 'Ryga':
+        st.session_df = pd.read_feather('Monachium_miejsca_odnosniki_INFO.ftr')
     else:
         st.session_df = pd.read_feather('Antwerpia_miejsca_odnosniki_INFO.ftr')
     st.session_df['description_vec'] = st.session_df['description_vec'].apply(lambda x: list(x))
