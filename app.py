@@ -292,7 +292,7 @@ choose__phrase = st.sidebar.text_input("Wyszukaj konkretną atrakcję (np. popul
 
 
 tekst = f'''
-             Po wybraniu miasta (w planach wszystkie europejskie miasta powyżej 500 tys. mieszkańców) generowana jest lista miejsc (atrakcji oraz 
+             Po wybraniu miasta generowana jest lista miejsc (atrakcji oraz 
              miejsc z jedzeniem) wraz z mapką i odnośnikami do videoblogów, w których mowa 
              o tych miejsach. Dodatkowo, po prawej stronie wyświetlane są informacje o atrakcji najbardziej dopasowanej do podanych oczekiwań📈'''
 
@@ -321,47 +321,21 @@ if choose__phrase != st.session_state.previous_choose_phrase or miasto != st.ses
             st.write(f'✅ Szukam miejsca odpowiadającego Twoim oczekiwaniom')
        # choose__phrase_tr = translate(choose__phrase)
         query_results = query_qdrant(choose__phrase, f'{miasto}')
-        try:
-            st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[0].payload["title"]].tolist()[0]
-            if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase) != '1':
-                st.session_state.choose_rec = 0
-                with st.sidebar:
-                    st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania')                            
-        except:
+        i = 0
+        st.session_state.choose_rec = 0
+        while i!=5:
             try:
-                st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[1].payload["title"]].tolist()[0]
+                st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[i].payload["title"]].tolist()[0]
                 if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase) != '1':
                     st.session_state.choose_rec = 0
                     with st.sidebar:
-                        st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania.')
+                        st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania')   
+                else:
+                    i+=1                       
             except:
-                try:
-                    st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[2].payload["title"]].tolist()[0]
-                    if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase) != '1':
-                        st.session_state.choose_rec = 0
-                        with st.sidebar:
-                            st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania.')
-                except:
-                    try:
-                        st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[3].payload["title"]].tolist()[0]
-                        if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase) != '1':
-                            st.session_state.choose_rec = 0
-                            with st.sidebar:
-                                st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania.')
-                    except:
-                        try:
-                            st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[4].payload["title"]].tolist()[0]
-                            if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase) != '1':
-                                st.session_state.choose_rec = 0
-                                with st.sidebar:
-                                    st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania.')
-                        except:
-                            with st.sidebar:
-                                st.write(f'🤖 Nie znaleziono miejsc spełniających Twoje oczekiwania. Zwiększ liczbę branych pod uwagę miejsc.')
-                            st.session_state.choose_rec = 0 
+                i+=1
 
-    else:
-        st.session_state.choose_rec = 0
+
     
     st.session_state.previous_choose_phrase = choose__phrase
     st.session_state.previous_miasto = miasto
