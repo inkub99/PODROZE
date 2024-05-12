@@ -330,10 +330,9 @@ if choose__phrase != st.session_state.previous_choose_phrase or miasto != st.ses
                     if i == 2:
                         with st.sidebar:
                             st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania')   
+                    i+=1
                 else:
-                    i=3
-                else:
-                    i+=1                       
+                    i=3          
             except:
                 if i == 2:
                         with st.sidebar:
