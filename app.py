@@ -328,8 +328,9 @@ if choose__phrase != st.session_state.previous_choose_phrase or miasto != st.ses
                 st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[i].payload["title"]].tolist()[0]
                 if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase) != '1':
                     st.session_state.choose_rec = 0
-                    with st.sidebar:
-                        st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania')   
+                    if i == 4:
+                        with st.sidebar:
+                            st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania')   
                 else:
                     i+=1                       
             except:
