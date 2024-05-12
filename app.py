@@ -180,26 +180,29 @@ if 'previous_choose_phrase' not in st.session_state:
     st.session_qdrant = qdrant_client.QdrantClient(url="http://localhost:6333")
 
 if miasto != st.session_state.previous_miasto:
-    st.session_df = pd.read_feather(f'{miasto}_miejsca_odnosniki_INFO.ftr')
-    st.session_df['description_vec'] = st.session_df['description_vec'].apply(lambda x: list(x))
-    st.session_df['title_vec'] = st.session_df['title_vec'].apply(lambda x: list(x))
-    vector_size = len(st.session_df['description_vec'][0])
-    st.session_qdrant = qdrant_client.QdrantClient(url="http://localhost:6333")
-    st.session_qdrant.get_collections()
+    try:
+        st.session_df = pd.read_feather(f'{miasto}_miejsca_odnosniki_INFO.ftr')
+        st.session_df['description_vec'] = st.session_df['description_vec'].apply(lambda x: list(x))
+        st.session_df['title_vec'] = st.session_df['title_vec'].apply(lambda x: list(x))
+        vector_size = len(st.session_df['description_vec'][0])
+        st.session_qdrant = qdrant_client.QdrantClient(url="http://localhost:6333")
+        st.session_qdrant.get_collections()
     
-    st.session_qdrant.recreate_collection(
-        collection_name=f'{miasto}',
-        vectors_config={
-            'title': rest.VectorParams(
-                distance=rest.Distance.COSINE,
+        st.session_qdrant.recreate_collection(
+            collection_name=f'{miasto}',
+            vectors_config={
+                'title': rest.VectorParams(
+                    distance=rest.Distance.COSINE,
+                    size=vector_size,
+                ),
+                'content': rest.VectorParams(
+                    distance=rest.Distance.COSINE,
                 size=vector_size,
-            ),
-            'content': rest.VectorParams(
-                distance=rest.Distance.COSINE,
-             size=vector_size,
-            ),
-        }
-    )
+                ),
+         }
+        )
+    except:
+        pass
 
 
     st.session_qdrant.upsert(
@@ -282,6 +285,7 @@ if choose__phrase != st.session_state.previous_choose_phrase or miasto != st.ses
             try:
                 st.session_state.choose_rec = df_rec.index[df_rec['title'] == query_results[i].payload["title"]].tolist()[0]
                 if zgodnosc(df_rec, st.session_state.choose_rec, choose__phrase) != '1':
+                    st.session_state.choose_rec = 0
                     if i == 2:
                         with st.sidebar:
                             st.write(f'🤖 Niestety, nie znaleziono miejsc spełniających Twoje oczekiwania')   
