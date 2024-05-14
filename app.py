@@ -166,7 +166,7 @@ with colB:
     else:
         miasta = sorted(list(set(nazwy.loc[nazwy['Państwa']==panstwo, 'Miasta'].to_list())))
     try:
-        miasto = st.selectbox("### **Wybierz / wpisz nazwę miasta:**", miasta, index=miasta.index('Barcelona'))
+        miasto = st.selectbox("### **Wybierz / wpisz nazwę miasta:**", miasta, index=miasta.index(' '))
     except:
         miasto = st.selectbox("### **Wybierz / wpisz nazwę miasta:**", miasta)
 
@@ -252,7 +252,7 @@ choose__phrase = st.sidebar.text_input("Wyszukaj konkretną atrakcję (np. popul
 tekst = f'''
              Po wybraniu miasta generowana jest lista miejsc (atrakcji oraz 
              miejsc z jedzeniem) wraz z mapką i odnośnikami do videoblogów, w których mowa 
-             o tych miejsach. Dodatkowo, po prawej stronie wyświetlane są informacje o atrakcji najbardziej dopasowanej do podanych oczekiwań📈'''
+             o tych miejscach. Dodatkowo, po prawej stronie wyświetlane są informacje o atrakcji najbardziej dopasowanej do podanych oczekiwań📈'''
 
 st.markdown(f"<h6 style='margin-top: -23px; text-align: left;'>{tekst}</h6>", unsafe_allow_html=True)
 
