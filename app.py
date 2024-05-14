@@ -166,7 +166,7 @@ with colB:
     else:
         miasta = sorted(list(set(nazwy.loc[nazwy['Państwa']==panstwo, 'Miasta'].to_list())))
     try:
-        miasto = st.selectbox("### **Wybierz / wpisz nazwę miasta:**", miasta)
+        miasto = st.selectbox("### **Wybierz / wpisz nazwę miasta:**", miasta, index=miasta.index('Antwerpia'))
     except:
         miasto = st.selectbox("### **Wybierz / wpisz nazwę miasta:**", miasta)
 
